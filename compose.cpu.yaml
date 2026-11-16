@@ -6,6 +6,14 @@ services:
       file: compose.yaml
       service: speaches
     image: ghcr.io/speaches-ai/speaches:latest-cpu
+    ports: !override
+      - 9082:8000
+    environment:
+      # Keep Whisper resident; repeated load/unload cycles leaked host RAM until OOM.
+      STT_MODEL_TTL: -1
+      WHISPER__COMPUTE_TYPE: int8
+    # Cap host RAM so a leak restarts only this container instead of the whole server.
+    mem_limit: 6g    
     build:
       args:
         BASE_IMAGE: ubuntu:24.04
