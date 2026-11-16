@@ -21,6 +21,32 @@ See the documentation for installation instructions and usage: [speaches.ai](htt
 
 Please create an issue if you find a bug, have a question, or a feature suggestion.
 
+## Quickstart
+
+Requires Docker with Compose v2.24 or newer.
+
+**1. Run the stack** (one at a time; both containers are named `speaches`)
+
+```bash
+# CPU (port 9082)
+docker compose -f compose.cpu.yaml up -d
+
+# GPU (port 9082; needs NVIDIA driver + NVIDIA Container Toolkit)
+docker compose -f compose.cuda.yaml up -d
+```
+
+**2. Download the models**
+
+```bash
+for m in Systran/faster-whisper-large-v3 \
+         speaches-ai/Kokoro-82M-v1.0-ONNX \
+         speaches-ai/piper-en_US-lessac-high \
+         speaches-ai/piper-en_US-ryan-high; do
+  curl -X POST "http://localhost:9082/v1/models/$m"
+done
+curl -s localhost:9082/v1/models   # verify
+```
+
 ## Demos
 
 ### Realtime API
