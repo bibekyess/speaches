@@ -7,6 +7,13 @@ services:
       service: speaches
     # NOTE: slightly older cuda version is available under 'latest-cuda-12.4.1' and `latest-cuda-12.6.3` tags
     image: ghcr.io/speaches-ai/speaches:latest-cuda-12.6.3
+    ports: !override
+      - 9082:8000
+    environment:
+      # Keep Whisper resident; repeated load/unload cycles leaked host RAM until OOM.
+      STT_MODEL_TTL: -1
+    # Cap host RAM so a leak restarts only this container instead of the whole server.
+    mem_limit: 6g
     build:
       args:
         BASE_IMAGE: nvidia/cuda:12.6.3-base-ubuntu24.04
